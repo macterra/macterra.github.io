@@ -123,8 +123,7 @@ nav a:hover { color: var(--ink); }
 .eyebrow,
 .facts li,
 .cards span,
-.row em,
-.sub {
+.row em {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -210,8 +209,7 @@ section { padding: 14vh 0 6vh; }
 
 .grid p,
 .cards p,
-.row p,
-.patents {
+.row p {
   color: var(--muted);
   line-height: 1.6;
   margin: 0;
@@ -264,17 +262,6 @@ section { padding: 14vh 0 6vh; }
 .row em {
   padding-top: 4px;
   font-style: normal;
-}
-
-.sub {
-  margin: 48px 0 14px;
-  font-size: 12px;
-}
-
-.patents {
-  margin: 0;
-  padding-left: 18px;
-  line-height: 1.75;
 }
 
 .links {
