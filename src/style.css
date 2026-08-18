@@ -169,6 +169,10 @@ h3 {
   color: var(--muted);
 }
 
+.now + .now {
+  margin-top: 0.35em;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
