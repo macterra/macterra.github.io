@@ -115,8 +115,9 @@ nav a:hover { color: var(--ink); }
 .copy {
   position: relative;
   z-index: 2;
-  max-width: 560px;
-  padding: 28vh 8vw 12vh;
+  width: min(36rem, calc(100% - 48px));
+  margin-left: clamp(24px, 5vw, 80px);
+  padding: 28vh 0 12vh;
   transform: translate3d(calc(var(--px, 0) * -10px), calc(var(--py, 0) * -6px), 0);
 }
 
@@ -159,7 +160,6 @@ h3 {
   font-size: clamp(15px, 1.8vw, 18px);
   line-height: 1.55;
   color: #d7c4a8;
-  max-width: 36em;
 }
 
 .lede.small { font-size: 16px; }
