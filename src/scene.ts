@@ -55,17 +55,17 @@ float hash21(vec2 p) {
 }
 
 vec2 heatShimmer(vec2 uv, float t) {
-  float a = sin(uv.x * 27.0 + t * 1.9) * sin(uv.y * 19.0 - t * 1.4);
-  float b = sin(uv.x * 48.0 - t * 2.7 + 1.3) * sin(uv.y * 33.0 + t * 2.1);
-  return vec2(a + 0.4 * b, 0.55 * b) * 0.0014;
+  float n = hash21(floor(uv * vec2(7.0, 4.0)));
+  float t2 = t * (0.85 + n * 0.7) + n * 5.4;
+  float a = sin(uv.x * 38.0 + t2 * 2.6) * sin(uv.y * 26.0 - t2 * 2.0);
+  float b = sin(uv.x * 67.0 - t2 * 3.5 + 2.0) * sin(uv.y * 49.0 + t2 * 2.8);
+  return vec2(a * 0.5 + b * 0.25, a * 0.3 + b * 0.75) * 0.0055;
 }
 
 float neonFlicker(vec2 uv, float t) {
-  vec2 id = floor(uv * vec2(20.0, 12.0));
+  vec2 id = floor(uv * vec2(14.0, 8.0));
   float n = hash21(id);
-  float f = 0.78 + 0.22 * sin(t * (7.0 + n * 16.0) + n * 22.0);
-  f *= 0.90 + 0.10 * sin(t * (1.4 + n * 2.8) + n * 5.0);
-  return mix(1.0, f, 0.35 + 0.65 * n);
+  return 0.72 + 0.28 * sin(t * (3.4 + n * 8.0) + n * 18.0);
 }
 
 vec3 samplePlate(vec2 uv) {
@@ -90,18 +90,22 @@ void main() {
   float mx = max(probe.r, max(probe.g, probe.b));
   float mn = min(probe.r, min(probe.g, probe.b));
   float sat = mx - mn;
-  float steam = smoothstep(0.28, 0.58, lum) * (1.0 - sat * 1.8);
-  float lamp = smoothstep(0.42, 0.78, mx);
-  float alive = clamp(steam * 1.2 + lamp * 0.7, 0.0, 1.0);
+  float steam = smoothstep(0.16, 0.40, lum) * smoothstep(0.38, 0.10, sat);
+  float lamp = smoothstep(0.22, 0.50, mx) * smoothstep(0.10, 0.32, sat);
+  float alive = clamp(steam + lamp, 0.0, 1.0);
 
   vec2 distort = vec2(0.0);
   if (uReduced < 0.5) {
-    distort = heatShimmer(base, uTime) * alive * 0.85;
+    distort = heatShimmer(base, uTime) * alive;
   }
 
   vec2 suv = base + distort;
   vec3 col = samplePlate(suv);
-  col *= mix(1.0, neonFlicker(base, uTime), lamp * sat * 0.45);
+  if (uReduced < 0.5) {
+    float boil = 0.5 + 0.5 * sin(uTime * 2.8 + base.y * 22.0 + base.x * 9.0);
+    col += col * steam * boil * 0.16;
+    col *= mix(1.0, neonFlicker(base, uTime), lamp);
+  }
 
   vec3 glow = vec3(0.0);
   for (int i = 0; i < 8; i++) {
