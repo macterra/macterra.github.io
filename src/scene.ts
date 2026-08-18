@@ -56,22 +56,45 @@ float hash21(vec2 p) {
 
 vec2 dropLayer(vec2 uv, float t, float scale) {
   vec2 aspect = vec2(uRes.x / max(uRes.y, 1.0), 1.0);
-  vec2 u = uv * scale * aspect;
-  vec2 cell = floor(u);
-  vec2 f = fract(u) - 0.5;
-  float n = hash21(cell);
-  float life = fract(t * (0.09 + n * 0.07) + n);
-  vec2 c = vec2((n - 0.5) * 0.62, 0.45 - life * 1.15);
-  vec2 d = (f - c);
-  d.x *= aspect.x / scale;
-  float r = length(d);
-  float drop = smoothstep(0.085, 0.04, r);
-  float trail = smoothstep(0.07, 0.0, abs(d.x * scale))
-    * smoothstep(c.y + 0.02, c.y - 0.08, f.y)
-    * smoothstep(c.y - 0.72, c.y - 0.12, f.y)
-    * (1.0 - life);
-  vec2 refr = d * drop * 0.28 + vec2(0.0, trail * 0.035);
-  return refr / scale;
+  vec2 u = uv * aspect * scale;
+  vec2 id0 = floor(u);
+  vec2 gv = fract(u) - 0.5;
+  vec2 acc = vec2(0.0);
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 off = vec2(float(x), float(y));
+      vec2 id = id0 + off;
+      float n = hash21(id);
+      if (n < 0.38) continue;
+      float life = fract(t * (0.10 + n * 0.09) + n * 3.17);
+      vec2 p = off + vec2((n - 0.5) * 0.55, 0.52 - life * 1.22);
+      vec2 d = gv - p;
+      d.x *= aspect.x;
+      float r = length(d);
+      float drop = smoothstep(0.068, 0.022, r);
+      float trail = smoothstep(0.042, 0.0, abs(d.x))
+        * smoothstep(0.0, 0.32, p.y - gv.y)
+        * smoothstep(0.68, 0.12, p.y - gv.y)
+        * (1.0 - life);
+      acc += d * drop * 0.20 + vec2(0.0, trail * 0.022);
+    }
+  }
+  return acc / scale;
+}
+
+vec2 heatShimmer(vec2 uv, float t) {
+  float a = sin(uv.x * 31.0 + t * 3.4) * sin(uv.y * 24.0 - t * 2.6);
+  float b = sin(uv.x * 57.0 - t * 5.1 + 1.3) * sin(uv.y * 41.0 + t * 3.7);
+  float c = sin(uv.x * 14.0 + uv.y * 11.0 + t * 1.8);
+  return vec2(a + 0.55 * b, 0.65 * b + 0.45 * c) * 0.0022;
+}
+
+float neonFlicker(vec2 uv, float t) {
+  vec2 id = floor(uv * vec2(20.0, 12.0));
+  float n = hash21(id);
+  float f = 0.78 + 0.22 * sin(t * (7.0 + n * 16.0) + n * 22.0);
+  f *= 0.90 + 0.10 * sin(t * (1.4 + n * 2.8) + n * 5.0);
+  return mix(1.0, f, 0.35 + 0.65 * n);
 }
 
 vec3 samplePlate(vec2 uv) {
@@ -93,13 +116,26 @@ void main() {
 
   vec2 distort = vec2(0.0);
   if (uReduced < 0.5) {
-    distort += dropLayer(uv, uTime, 7.0);
-    distort += dropLayer(uv + 17.2, uTime * 0.85 + 3.1, 12.5) * 0.65;
-    distort += dropLayer(uv + 41.7, uTime * 1.1 + 8.4, 21.0) * 0.4;
+    distort += dropLayer(uv, uTime, 11.0);
+    distort += dropLayer(uv + 17.2, uTime * 0.87 + 3.1, 18.0) * 0.7;
+    distort += dropLayer(uv + 41.7, uTime * 1.13 + 8.4, 28.0) * 0.45;
+  }
+
+  vec3 probe = samplePlate(base);
+  float lum = dot(probe, vec3(0.30, 0.54, 0.16));
+  float mx = max(probe.r, max(probe.g, probe.b));
+  float mn = min(probe.r, min(probe.g, probe.b));
+  float sat = mx - mn;
+  float steam = smoothstep(0.20, 0.52, lum) * (1.0 - sat * 1.6);
+  float lamp = smoothstep(0.32, 0.70, mx);
+  float alive = clamp(steam * 1.4 + lamp, 0.0, 1.0);
+  if (uReduced < 0.5) {
+    distort += heatShimmer(base, uTime) * (0.4 + 2.1 * alive);
   }
 
   vec2 suv = base + distort;
   vec3 col = samplePlate(suv);
+  col *= mix(1.0, neonFlicker(base, uTime), lamp * sat * 1.15);
 
   vec3 glow = vec3(0.0);
   for (int i = 0; i < 8; i++) {
