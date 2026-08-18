@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Film plate, not a game level.
  * The canyon is a photograph. The canvas is a pane of rainy glass in front of it.
  */
