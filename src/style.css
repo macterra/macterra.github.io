@@ -1,0 +1,340 @@
+:root {
+  --ink: #f0e6d4;
+  --muted: #b59a7a;
+  --line: rgba(232, 160, 92, 0.22);
+  --accent: #e8a05c;
+  --hot: #ff2d8a;
+  --bg: #140c0a;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  color: var(--ink);
+  font-family: "Instrument Sans", "Segoe UI", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+a { color: var(--accent); }
+
+#gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.is-ready #gl {
+  opacity: 1;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(20, 12, 10, 0.55) 0%, rgba(20, 12, 10, 0.12) 36%, transparent 58%),
+    linear-gradient(180deg, rgba(20, 12, 10, 0.18) 0%, transparent 22%, transparent 78%, rgba(20, 12, 10, 0.28) 100%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px;
+}
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    url("/plates/street.jpg") center / cover no-repeat,
+    var(--bg);
+}
+
+.bar {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 28px;
+  pointer-events: none;
+}
+
+.bar a { pointer-events: auto; }
+
+.mark {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  gap: 22px;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+nav a:hover { color: var(--ink); }
+
+.copy {
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+  padding: 28vh 8vw 12vh;
+  transform: translate3d(calc(var(--px, 0) * -10px), calc(var(--py, 0) * -6px), 0);
+}
+
+.eyebrow,
+.facts li,
+.cards span,
+.row em,
+.sub {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--accent);
+}
+
+h1 {
+  font-weight: 500;
+  font-size: clamp(42px, 7vw, 76px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  margin: 12px 0 20px;
+  color: #f6ecdc;
+  text-shadow: 0 18px 50px rgba(10, 6, 4, 0.55);
+}
+
+h2 {
+  font-weight: 500;
+  font-size: clamp(26px, 3.6vw, 38px);
+  letter-spacing: -0.03em;
+  margin: 0 0 26px;
+  color: #f6ecdc;
+}
+
+h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.lede {
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.55;
+  color: #d7c4a8;
+  max-width: 36em;
+}
+
+.lede.small { font-size: 16px; }
+
+.now {
+  margin-top: 22px;
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 22px 0 0;
+  margin: 0;
+}
+
+.chips li {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c9d4e0;
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+}
+
+main {
+  position: relative;
+  z-index: 2;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 28px 80px;
+}
+
+section { padding: 14vh 0 6vh; }
+
+.grid.two {
+  display: grid;
+  gap: 28px;
+}
+
+@media (min-width: 760px) {
+  .grid.two { grid-template-columns: 1fr 1fr; }
+}
+
+.grid p,
+.cards p,
+.row p,
+.patents {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  list-style: none;
+  padding: 28px 0 0;
+  margin: 0;
+}
+
+.facts li {
+  color: #c9b08a;
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+}
+
+.cards {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 700px) {
+  .cards { grid-template-columns: 1fr 1fr; }
+}
+
+.cards article {
+  border: 1px solid var(--line);
+  background: rgba(22, 14, 10, 0.72);
+  padding: 22px;
+}
+
+.cards span { display: block; margin-bottom: 16px; }
+
+.row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 18px;
+  padding: 16px 8px;
+  text-decoration: none;
+  color: inherit;
+  border-top: 1px solid var(--line);
+}
+
+.row:hover { background: rgba(232, 160, 92, 0.06); }
+
+.row em {
+  padding-top: 4px;
+  font-style: normal;
+}
+
+.sub {
+  margin: 48px 0 14px;
+  font-size: 12px;
+}
+
+.patents {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.75;
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+}
+
+.links a {
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.links a:hover { color: #fff; }
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 28px;
+  color: var(--muted);
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+}
+
+#cursor {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border: 1px solid var(--accent);
+  pointer-events: none;
+  z-index: 30;
+  mix-blend-mode: screen;
+}
+
+.js .copy,
+.js .bar {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.is-ready .copy,
+.is-ready .bar {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.9s ease, transform 1s ease;
+}
+
+.is-ready .copy { transition-delay: 0.15s; }
+
+@media (pointer: coarse) {
+  html, body { cursor: auto; }
+  #cursor { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .copy, .js .bar { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}

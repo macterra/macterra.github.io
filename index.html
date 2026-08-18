@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>David McFadzean — macterra</title>
+    <meta
+      name="description"
+      content="David McFadzean is a principal engineer and architect in Toronto. 35+ years building safety-critical, distributed, and intelligent systems. Axionic Agency Lab. Archon."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+    <script>document.documentElement.className += " js";</script>
+  </head>
+  <body>
+    <div id="cursor" aria-hidden="true"></div>
+
+    <section class="hero" id="top">
+      <canvas id="gl"></canvas>
+      <div class="vignette"></div>
+      <div class="grain" aria-hidden="true"></div>
+
+      <header class="bar">
+        <a class="mark" href="#top">MACTERRA</a>
+        <nav>
+          <a href="#about">About</a>
+          <a href="#practice">Practice</a>
+          <a href="#work">Work</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <div class="copy">
+        <p class="eyebrow">Toronto · P.Eng · cypherpunk</p>
+        <h1>David McFadzean</h1>
+        <p class="lede">
+          Privacy is the power to selectively reveal oneself.
+          I build the rails: identity, agency, systems that cannot be quietly seized.
+        </p>
+        <p class="now">
+          Executive Director, <a href="https://axionic.org/team.html">Axionic Agency Lab</a>
+        </p>
+        <ul class="chips">
+          <li>35+ years</li>
+          <li>7 patents</li>
+          <li>Archon / Archetech</li>
+        </ul>
+      </div>
+    </section>
+
+    <main>
+      <section id="about">
+        <h2>About</h2>
+        <div class="grid two">
+          <p>
+            Principal engineer, architect, and engineering leader with 35+ years
+            building large-scale, safety-critical, and distributed systems —
+            medical devices, remote-access platforms, and now open identity
+            infrastructure.
+          </p>
+          <p>
+            I am interested in the relation between intelligence, rationality,
+            and ethics. I think people are best understood as the product of two
+            kinds of replicators: genes and memes. I think life is best lived as
+            a game. There is great beauty in logic as expressed in mathematics
+            and algorithms.
+          </p>
+        </div>
+        <ul class="facts">
+          <li>B.Sc. Electrical Engineering</li>
+          <li>M.Sc. Computer Science (AI)</li>
+          <li>University of Calgary</li>
+          <li>Professional Engineers Ontario</li>
+          <li>Formerly Synaptive Medical</li>
+        </ul>
+      </section>
+
+      <section id="practice">
+        <h2>Practice</h2>
+        <div class="cards">
+          <article>
+            <span>01</span>
+            <h3>Agency</h3>
+            <p>
+              Founder of Axionic Agency Lab. Research on agency theory, AI
+              alignment, and sovereign choice — how systems decide under
+              constraint.
+            </p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Identity</h3>
+            <p>
+              Archon and Archetech: peer-to-peer identity across Bitcoin,
+              Lightning, Zcash, and Nostr. Portable personhood without a
+              platform.
+            </p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Safety-critical</h3>
+            <p>
+              Surgical navigation, robotic positioning, and live overlay UIs.
+              Systems where the cost of being wrong is not a ticket.
+            </p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Collective mind</h3>
+            <p>
+              Technology that lets groups become more intelligent. The Software
+              Development Game. Mentorship as a first-class engineering
+              practice.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="work">
+        <h2>Selected work</h2>
+        <div class="rows">
+          <a class="row" href="https://axionic.org/team.html">
+            <em>Now</em>
+            <div>
+              <h3>Axionic Agency Lab</h3>
+              <p>Executive Director. Agency, alignment, rationality.</p>
+            </div>
+          </a>
+          <a class="row" href="https://github.com/macterra">
+            <em>OSS</em>
+            <div>
+              <h3>Archon / Archetech</h3>
+              <p>Decentralized identity. DIDs, Bitcoin, Lightning, Nostr.</p>
+            </div>
+          </a>
+          <a class="row" href="https://macterra.github.io/phylum/">
+            <em>Play</em>
+            <div>
+              <h3>Phylum</h3>
+              <p>Cinematic 2D evolving creatures. WebGPU, gape, bite, lineage.</p>
+            </div>
+          </a>
+          <a class="row" href="http://www.kohl.ca/articles/The_Software_Development_Game.pdf">
+            <em>2012</em>
+            <div>
+              <h3>The Software Development Game</h3>
+              <p>Better Software. Adaptive process as a game of private policy.</p>
+            </div>
+          </a>
+        </div>
+
+        <h3 class="sub">Patents</h3>
+        <ul class="patents">
+          <li>
+            <a href="https://patents.google.com/patent/US10904363B2">US10904363B2</a>
+            — tiered remote access to an application at a URL
+          </li>
+          <li>
+            <a href="https://patents.google.com/patent/US10646290B2">US10646290B2</a>
+            — configuring positions in a surgical positioning system
+          </li>
+          <li>
+            <a href="https://patents.google.com/patent/US20190099225A1">US20190099225A1</a>
+            — overlay UI on surgical video
+          </li>
+          <li>
+            <a href="https://patents.google.com/patent/US10158701B2">US10158701B2</a>
+            — state model of an application program
+          </li>
+          <li>
+            <a href="https://patents.google.com/patent/US9742819B2">US9742819B2</a>
+            — reliable messaging across volatile networks
+          </li>
+          <li>
+            <a href="https://patents.google.com/patent/US9720747B2">US9720747B2</a>
+            — flow control in a collaborative remote-access environment
+          </li>
+          <li>
+            <a href="https://patents.google.com/patent/US8799354">US8799354</a>
+            — remote access to the state of an application
+          </li>
+        </ul>
+      </section>
+
+      <section id="contact">
+        <h2>Contact</h2>
+        <p class="lede small">
+          Cypherpunks write code. I prefer to operate behind the scenes.
+        </p>
+        <ul class="links">
+          <li><a href="mailto:davidmc@gmail.com">davidmc@gmail.com</a></li>
+          <li><a href="https://www.linkedin.com/in/davidmc/">LinkedIn</a></li>
+          <li><a href="https://github.com/macterra">GitHub</a></li>
+          <li><a href="https://x.com/macterra">X / @macterra</a></li>
+          <li><a href="https://axionic.org/team.html">Axionic</a></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <span>© David McFadzean</span>
+      <span>trusted third parties are security holes</span>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
