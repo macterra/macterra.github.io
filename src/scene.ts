@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Film plate, not a game level.
  * The canyon is a photograph. The canvas is a pane of rainy glass in front of it.
  */
@@ -54,18 +54,24 @@ float hash21(vec2 p) {
   return fract(p.x * p.y);
 }
 
-vec2 heatShimmer(vec2 uv, float t) {
-  float n = hash21(floor(uv * vec2(7.0, 4.0)));
-  float t2 = t * (0.85 + n * 0.7) + n * 5.4;
-  float a = sin(uv.x * 38.0 + t2 * 2.6) * sin(uv.y * 26.0 - t2 * 2.0);
-  float b = sin(uv.x * 67.0 - t2 * 3.5 + 2.0) * sin(uv.y * 49.0 + t2 * 2.8);
-  return vec2(a * 0.5 + b * 0.25, a * 0.3 + b * 0.75) * 0.0055;
-}
-
-float neonFlicker(vec2 uv, float t) {
-  vec2 id = floor(uv * vec2(14.0, 8.0));
-  float n = hash21(id);
-  return 0.72 + 0.28 * sin(t * (3.4 + n * 8.0) + n * 18.0);
+vec2 dropLayer(vec2 uv, float t, float scale) {
+  vec2 aspect = vec2(uRes.x / max(uRes.y, 1.0), 1.0);
+  vec2 u = uv * scale * aspect;
+  vec2 cell = floor(u);
+  vec2 f = fract(u) - 0.5;
+  float n = hash21(cell);
+  float life = fract(t * (0.09 + n * 0.07) + n);
+  vec2 c = vec2((n - 0.5) * 0.62, 0.45 - life * 1.15);
+  vec2 d = (f - c);
+  d.x *= aspect.x / scale;
+  float r = length(d);
+  float drop = smoothstep(0.085, 0.04, r);
+  float trail = smoothstep(0.07, 0.0, abs(d.x * scale))
+    * smoothstep(c.y + 0.02, c.y - 0.08, f.y)
+    * smoothstep(c.y - 0.72, c.y - 0.12, f.y)
+    * (1.0 - life);
+  vec2 refr = d * drop * 0.28 + vec2(0.0, trail * 0.035);
+  return refr / scale;
 }
 
 vec3 samplePlate(vec2 uv) {
@@ -85,27 +91,15 @@ void main() {
   float ken = 1.0 - 0.035 * (uReduced > 0.5 ? 0.0 : (0.5 + 0.5 * sin(uTime * 0.025)));
   vec2 base = (uv - 0.5) * ken + 0.5 + drift;
 
-  vec3 probe = samplePlate(base);
-  float lum = dot(probe, vec3(0.30, 0.54, 0.16));
-  float mx = max(probe.r, max(probe.g, probe.b));
-  float mn = min(probe.r, min(probe.g, probe.b));
-  float sat = mx - mn;
-  float steam = smoothstep(0.16, 0.40, lum) * smoothstep(0.38, 0.10, sat);
-  float lamp = smoothstep(0.22, 0.50, mx) * smoothstep(0.10, 0.32, sat);
-  float alive = clamp(steam + lamp, 0.0, 1.0);
-
   vec2 distort = vec2(0.0);
   if (uReduced < 0.5) {
-    distort = heatShimmer(base, uTime) * alive;
+    distort += dropLayer(uv, uTime, 7.0);
+    distort += dropLayer(uv + 17.2, uTime * 0.85 + 3.1, 12.5) * 0.65;
+    distort += dropLayer(uv + 41.7, uTime * 1.1 + 8.4, 21.0) * 0.4;
   }
 
   vec2 suv = base + distort;
   vec3 col = samplePlate(suv);
-  if (uReduced < 0.5) {
-    float boil = 0.5 + 0.5 * sin(uTime * 2.8 + base.y * 22.0 + base.x * 9.0);
-    col += col * steam * boil * 0.16;
-    col *= mix(1.0, neonFlicker(base, uTime), lamp);
-  }
 
   vec3 glow = vec3(0.0);
   for (int i = 0; i < 8; i++) {
@@ -123,6 +117,12 @@ void main() {
     streak += max(dot(s, vec3(0.3, 0.5, 0.2)) - 0.58, 0.0);
   }
   col += vec3(1.0, 0.62, 0.28) * streak * 0.035;
+
+  if (uReduced < 0.5) {
+    float sheet = fract(uv.x * 90.0 + uv.y * 18.0 - uTime * 2.4);
+    float rain = smoothstep(0.97, 1.0, sheet) * 0.045 * (1.0 - uv.y);
+    col += vec3(0.85, 0.78, 0.68) * rain;
+  }
 
   col *= vec3(1.04, 0.96, 0.88);
   col = mix(vec3(0.09, 0.045, 0.025), col, 0.96);
