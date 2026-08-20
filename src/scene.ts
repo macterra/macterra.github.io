@@ -87,15 +87,22 @@ vec3 aces(vec3 x) {
 void main() {
   vec2 uv = coverUv(vUv);
 
+  vec2 pointerUv = vec2(uMouse.x * 0.5 + 0.5, 0.5 - uMouse.y * 0.5);
+  vec2 aspect = vec2(uRes.x / max(uRes.y, 1.0), 1.0);
+  float reveal = uReduced > 0.5
+    ? 1.0
+    : smoothstep(0.78, 0.10, length((vUv - pointerUv) * aspect));
+
   vec2 drift = uMouse * vec2(0.022, 0.012);
   float ken = 1.0 - 0.035 * (uReduced > 0.5 ? 0.0 : (0.5 + 0.5 * sin(uTime * 0.025)));
   vec2 base = (uv - 0.5) * ken + 0.5 + drift;
 
   vec2 distort = vec2(0.0);
   if (uReduced < 0.5) {
-    distort += dropLayer(uv, uTime, 7.0);
-    distort += dropLayer(uv + 17.2, uTime * 0.85 + 3.1, 12.5) * 0.65;
-    distort += dropLayer(uv + 41.7, uTime * 1.1 + 8.4, 21.0) * 0.4;
+    float near = mix(0.4, 1.15, reveal);
+    distort += dropLayer(uv, uTime, 7.0) * near;
+    distort += dropLayer(uv + 17.2, uTime * 0.85 + 3.1, 12.5) * 0.65 * near;
+    distort += dropLayer(uv + 41.7, uTime * 1.1 + 8.4, 21.0) * 0.4 * near;
   }
 
   vec2 suv = base + distort;
@@ -108,7 +115,7 @@ void main() {
     vec3 s = samplePlate(suv + off);
     glow += max(s - vec3(0.52), 0.0);
   }
-  col += glow * 0.16;
+  col += glow * mix(0.06, 0.22, reveal);
 
   float streak = 0.0;
   for (int i = -7; i <= 7; i++) {
@@ -116,7 +123,7 @@ void main() {
     vec3 s = samplePlate(suv + vec2(float(i) * 0.0028, 0.0));
     streak += max(dot(s, vec3(0.3, 0.5, 0.2)) - 0.58, 0.0);
   }
-  col += vec3(1.0, 0.62, 0.28) * streak * 0.035;
+  col += vec3(1.0, 0.62, 0.28) * streak * mix(0.012, 0.045, reveal);
 
   if (uReduced < 0.5) {
     float sheet = fract(uv.x * 90.0 + uv.y * 18.0 - uTime * 2.4);
@@ -126,7 +133,9 @@ void main() {
 
   col *= vec3(1.04, 0.96, 0.88);
   col = mix(vec3(0.09, 0.045, 0.025), col, 0.96);
-  col = aces(col * 1.05);
+  col = mix(col * 0.72, col, reveal);
+  col = mix(col, vec3(0.14, 0.08, 0.05), 0.18 * (1.0 - reveal));
+  col = aces(col * mix(0.92, 1.08, reveal));
 
   float vig = 1.0 - 0.35 * pow(length((vUv - 0.5) * vec2(1.15, 1.0)), 2.2);
   col *= vig;
