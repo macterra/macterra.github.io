@@ -19,7 +19,57 @@ window.addEventListener(
   { passive: true },
 );
 
+function bindJournal(): void {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const bar = document.querySelector(".bar") as HTMLElement | null;
+  const sections = Array.from(document.querySelectorAll("main section[id]"));
+  const navLinks = Array.from(document.querySelectorAll("nav a"));
+
+  if (reduced) {
+    for (const s of sections) s.classList.add("is-in");
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) entry.target.classList.add("is-in");
+        }
+      },
+      { threshold: 0.16, rootMargin: "0px 0px -10% 0px" },
+    );
+    for (const s of sections) io.observe(s);
+    window.setTimeout(() => {
+      for (const s of sections) s.classList.add("is-in");
+    }, 4000);
+  }
+
+  const spy = (): void => {
+    let current = "";
+    for (const s of sections) {
+      if (s.getBoundingClientRect().top < window.innerHeight * 0.42) current = s.id;
+    }
+    for (const a of navLinks) {
+      a.classList.toggle("is-here", a.getAttribute("href") === `#${current}`);
+    }
+    if (hero && bar) {
+      bar.classList.toggle("is-solid", hero.getBoundingClientRect().bottom < 72);
+    }
+  };
+  window.addEventListener("scroll", spy, { passive: true });
+  spy();
+
+  for (const card of document.querySelectorAll(".cards article")) {
+    const el = card as HTMLElement;
+    el.addEventListener("pointermove", (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--lx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--ly", `${e.clientY - r.top}px`);
+    });
+  }
+}
+
 async function boot(): Promise<void> {
+  bindJournal();
   const canvas = document.querySelector("#gl") as HTMLCanvasElement;
   const lattice = await Lattice.create(canvas);
   document.documentElement.classList.add("is-ready");
